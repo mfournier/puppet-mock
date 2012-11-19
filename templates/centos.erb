@@ -1,0 +1,69 @@
+config_opts['root'] = '<%= distro %>-<%=version %>-<%= architecture %>'
+config_opts['target_arch'] = '<%= architecture %>'
+config_opts['legal_host_arches'] = ('<%= architecture %>',)
+config_opts['chroot_setup_cmd'] = 'groupinstall buildsys-build'
+config_opts['dist'] = 'c<%= version %>'  # only useful for --resultdir variable subst
+
+config_opts['yum.conf'] = """
+[main]
+cachedir=/var/cache/yum
+debuglevel=1
+reposdir=/dev/null
+logfile=/var/log/yum.log
+retries=20
+obsoletes=1
+gpgcheck=0
+assumeyes=1
+syslog_ident=mock
+syslog_device=
+
+# repos
+
+# CentOS-Base.repo
+#
+# The mirror system uses the connecting IP address of the client and the
+# update status of each mirror to pick mirrors that are updated to and
+# geographically close to the client.  You should use this for CentOS updates
+# unless you are manually picking other mirrors.
+#
+# If the mirrorlist= does not work for you, as a fall back you can try the
+# remarked out baseurl= line instead.
+#
+#
+
+[base]
+name=CentOS-<%= version %> - Base
+mirrorlist=http://mirrorlist.centos.org/?release=<%= version %>&arch=<%= architecture %>&repo=os
+
+#released updates
+[updates]
+name=CentOS-<%= version %> - Updates
+mirrorlist=http://mirrorlist.centos.org/?release=<%= version %>&arch=<%= architecture %>&repo=updates
+
+#additional packages that may be useful
+[extras]
+name=CentOS-<%= version %> - Extras
+mirrorlist=http://mirrorlist.centos.org/?release=<%= version %>&arch=<%= architecture %>&repo=extras
+
+#additional packages that extend functionality of existing packages
+[centosplus]
+name=CentOS-<%= version %> - Plus
+mirrorlist=http://mirrorlist.centos.org/?release=<%= version %>&arch=<%= architecture %>&repo=centosplus
+enabled=0
+
+#contrib - packages by Centos Users
+[contrib]
+name=CentOS-<%= version %> - Contrib
+mirrorlist=http://mirrorlist.centos.org/?release=<%= version %>&arch=<%= architecture %>&repo=contrib
+enabled=0
+
+[epel-fedora]
+name=Extra Packages for Enterprise Linux <%= version %> - <%= architecture %>
+baseurl=http://mirror.switch.ch/ftp/mirror/epel/<%= version %>/<%= architecture %>
+
+[epel-fedora-testing]
+name=Extra Packages for Enterprise Linux <%= version %> testing - <%= architecture %>
+baseurl=http://mirror.switch.ch/ftp/mirror/epel/testing/<%= version %>/<%= architecture %>
+enabled=0
+
+"""
