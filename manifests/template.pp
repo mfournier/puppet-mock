@@ -6,10 +6,11 @@ define mock::template(
   $template
 ) {
 
-  class { 'mock': } ->
+  include '::mock'
 
   file { "/etc/mock/${distro}-${version}-${architecture}.cfg":
     ensure  => $ensure,
     content => template($template),
+    require => Package['mock'],
   }
 }
